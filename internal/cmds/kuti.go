@@ -1,7 +1,7 @@
 package cmds
 
 import (
-	"github.com/rwxrob/kuti/lib/cmds/k8sapp"
+	"github.com/rwxrob/kuti/internal/cmds/k8sapp"
 	"github.com/spf13/cobra"
 )
 
