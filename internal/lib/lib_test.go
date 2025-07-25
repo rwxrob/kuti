@@ -23,3 +23,17 @@ version: v1.0.0
 	// Output:
 	// v1.0.0
 }
+
+func Example_ExecOutError() {
+	out, _ := lib.ExecOutError(`echo`, `something`)
+	fmt.Println(out)
+	// Output:
+	// something
+}
+
+func Example_ExecOutError_fail() {
+	_, err := lib.ExecOutError(`ls`, `notexist`)
+	fmt.Println(err)
+	// Output:
+	// exit status 1
+}

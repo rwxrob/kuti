@@ -50,6 +50,18 @@ func ExecOut(args ...string) string {
 	return string(out)
 }
 
+func ExecOutError(args ...string) (string, error) {
+	if len(args) == 0 {
+		return "", fmt.Errorf(`missing command argument`)
+	}
+	path, err := exec.LookPath(args[0])
+	if err != nil {
+		return "", err
+	}
+	out, err := exec.Command(path, args[1:]...).Output()
+	return string(out), err
+}
+
 func YQ(query, yaml string) (string, error) {
 	path, err := exec.LookPath(`yq`)
 	if err != nil {
