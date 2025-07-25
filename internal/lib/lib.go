@@ -1,9 +1,12 @@
 package lib
 
 import (
+	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // Exec checks for existence of first argument as an executable on the
@@ -25,4 +28,39 @@ func Exec(args ...string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+// ExecOut returns the standard output of the executed command as
+// a string. Errors are logged but not returned.
+func ExecOut(args ...string) string {
+	if len(args) == 0 {
+		log.Println("missing name of executable")
+		return ""
+	}
+	path, err := exec.LookPath(args[0])
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	out, err := exec.Command(path, args[1:]...).Output()
+
+	if err != nil {
+		log.Println(err)
+	}
+	return string(out)
+}
+
+func YQ(query, yaml string) (string, error) {
+	path, err := exec.LookPath(`yq`)
+	if err != nil {
+		return "", err
+	}
+	in := strings.NewReader(yaml)
+	out := new(bytes.Buffer)
+	cmd := exec.Command(path, query)
+	cmd.Stdout = out
+	cmd.Stdin = in
+	cmd.Stderr = os.Stderr
+	err = cmd.Run()
+	return out.String(), err
 }
